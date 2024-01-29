@@ -47,7 +47,7 @@ variable "topics" {
 variable "region" {
   description = "The region of Confluent Cloud Network."
   type        = string
-  default     = "eu-west-2"
+  default     = "us-east-2"
 }
 
 variable "cidr" {
@@ -59,23 +59,23 @@ variable "cidr" {
 variable "aws_account_id" {
   description = "The AWS Account ID of the peer VPC owner (12 digits)."
   type        = string
-  default     = "529795807852"
+  default     = "221896574556"
 }
 
 variable "vpc_id" {
   description = "The AWS VPC ID of the peer VPC that you're peering with Confluent Cloud."
   type        = string
-  default     = "vpc-04d65f595dfd1d251"
+  default     = "vpc-069a48166920054b7"
 }
 
 variable "routes" {
   description = "The AWS VPC CIDR blocks or subsets. This must be from the supported CIDR blocks and must not overlap with your Confluent Cloud CIDR block or any other network peering connection VPC CIDR."
   type        = list(string)
-  default     = ["172.24.16.0/20", "172.24.0.0/22"]
+  default     = ["10.0.0.0/16"]
 }
 
 variable "customer_region" {
   description = "The region of the AWS peer VPC."
   type        = string
-  default     = "eu-west-2"
+  default     = "us-east-2"
 }
