@@ -167,6 +167,9 @@ resource "confluent_network" "peering" {
   environment {
     id = confluent_environment.staging.id
   }
+depends_on = [
+    confluent_environment.staging  
+  ]
 }
 
 resource "confluent_peering" "aws" {
@@ -183,6 +186,10 @@ resource "confluent_peering" "aws" {
   network {
     id = confluent_network.peering.id
   }
+depends_on = [
+    confluent_environment.staging,
+    confluent_network.peering
+  ]
 }
 
 resource "confluent_kafka_cluster" "dedicated" {
