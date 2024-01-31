@@ -129,7 +129,9 @@ module "confluent_kafka_topics" {
     confluent_api_key.app-manager-kafka-api-key,
     confluent_network.peering,
     confluent_peering.aws,
-    confluent_role_binding.app-manager-kafka-cluster-admin
+    confluent_role_binding.app-manager-kafka-cluster-admin,
+    aws_vpc_peering_connection_accepter.peer,
+    aws_route.r  
   ]
   
 }
