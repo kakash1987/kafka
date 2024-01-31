@@ -48,6 +48,7 @@ resource "confluent_api_key" "app-manager-kafka-api-key" {
     api_version = confluent_service_account.app-manager.api_version
     kind        = confluent_service_account.app-manager.kind
   }
+}
 
   managed_resource {
     id          = confluent_kafka_cluster.dedicated.id
