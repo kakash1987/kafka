@@ -18,10 +18,10 @@ resource "confluent_service_account" "app-manager" {
   description  = "Service account to manage 'inventory' Kafka cluster"
 }
 
-resource "confluent_service_account" "app-manager2" {
-  display_name = "app-manager2"
-  description  = "Service account to manage 'inventory2' Kafka cluster"
-}
+#resource "confluent_service_account" "app-manager2" {
+#  display_name = "app-manager2"
+#  description  = "Service account to manage 'inventory2' Kafka cluster"
+#}
 
 output "confluent_service_account_app-manager" {
   value = confluent_service_account.app-manager.id
@@ -33,11 +33,11 @@ resource "confluent_role_binding" "app-manager-kafka-cluster-admin" {
   crn_pattern = confluent_kafka_cluster.dedicated.rbac_crn
 }
 
-resource "confluent_role_binding" "app-manager-kafka-cluster-admin2" {
-  principal   = "User:${confluent_service_account.app-manager2.id}"
-  role_name   = "CloudClusterAdmin"
-  crn_pattern = confluent_kafka_cluster.dedicated2.rbac_crn
-}
+#resource "confluent_role_binding" "app-manager-kafka-cluster-admin2" {
+#  principal   = "User:${confluent_service_account.app-manager2.id}"
+#  role_name   = "CloudClusterAdmin"
+#  crn_pattern = confluent_kafka_cluster.dedicated2.rbac_crn
+#}
 
 resource "confluent_api_key" "app-manager-kafka-api-key" {
   display_name = "app-manager-kafka-api-key"
@@ -60,25 +60,25 @@ resource "confluent_api_key" "app-manager-kafka-api-key" {
   }
 }
 
-resource "confluent_api_key" "app-manager-kafka-api-key2" {
-  display_name = "app-manager-kafka-api-key2"
-  description  = "Kafka API Key that is owned by 'app-manager2' service account"
-  disable_wait_for_ready = "true"
-  owner {
-    id          = confluent_service_account.app-manager2.id
-    api_version = confluent_service_account.app-manager2.api_version
-    kind        = confluent_service_account.app-manager2.kind
-  }
+#resource "confluent_api_key" "app-manager-kafka-api-key2" {
+#  display_name = "app-manager-kafka-api-key2"
+#  description  = "Kafka API Key that is owned by 'app-manager2' service account"
+#  disable_wait_for_ready = "true"
+#  owner {
+#    id          = confluent_service_account.app-manager2.id
+#    api_version = confluent_service_account.app-manager2.api_version
+#    kind        = confluent_service_account.app-manager2.kind
+#  }
 
-  managed_resource {
-    id          = confluent_kafka_cluster.dedicated2.id
-    api_version = confluent_kafka_cluster.dedicated2.api_version
-    kind        = confluent_kafka_cluster.dedicated2.kind
+#  managed_resource {
+#    id          = confluent_kafka_cluster.dedicated2.id
+#    api_version = confluent_kafka_cluster.dedicated2.api_version
+#    kind        = confluent_kafka_cluster.dedicated2.kind
 
-    environment {
-      id = confluent_environment.staging.id
-    }
-  }
+#    environment {
+#      id = confluent_environment.staging.id
+#    }
+#  }
 
   # The goal is to ensure that confluent_role_binding.app-manager-kafka-cluster-admin is created before
   # confluent_api_key.app-manager-kafka-api-key is used to create instances of
@@ -119,32 +119,32 @@ module "confluent_kafka_topics" {
   
 }
 
-module "confluent_kafka_topics2" {
-  source = "../../modules/confluent_kafka_topics_module"
+#module "confluent_kafka_topics2" {
+#  source = "../../modules/confluent_kafka_topics_module"
 
   # kafka_id            = var.kafka_id
   # kafka_rest_endpoint = var.kafka_rest_endpoint
   # kafka_api_key       = var.kafka_api_key
   # kafka_api_secret    = var.kafka_api_secret
-  kafka_id              = confluent_kafka_cluster.dedicated2.id
-  kafka_rest_endpoint   = confluent_kafka_cluster.dedicated2.rest_endpoint
-  kafka_api_key         = confluent_api_key.app-manager-kafka-api-key2.id
-  kafka_api_secret      = confluent_api_key.app-manager-kafka-api-key2.secret
-  cloud_api_key         = var.confluent_cloud_api_key
-  cloud_api_secret      = var.confluent_cloud_api_secret
-  environment_id        = confluent_environment.staging.id
-  kafka_api_version     = confluent_kafka_cluster.dedicated2.api_version
-  kafka_kind            = confluent_kafka_cluster.dedicated2.kind
-  confluent_service_account_id          = confluent_service_account.app-manager2.id
-  confluent_service_account_api_version = confluent_service_account.app-manager2.api_version
-  confluent_service_account_kind        = confluent_service_account.app-manager2.kind
-  topics                = jsondecode(file("topics2.json"))
+ # kafka_id              = confluent_kafka_cluster.dedicated2.id
+ # kafka_rest_endpoint   = confluent_kafka_cluster.dedicated2.rest_endpoint
+ # kafka_api_key         = confluent_api_key.app-manager-kafka-api-key2.id
+ # kafka_api_secret      = confluent_api_key.app-manager-kafka-api-key2.secret
+ # cloud_api_key         = var.confluent_cloud_api_key
+ # cloud_api_secret      = var.confluent_cloud_api_secret
+ # environment_id        = confluent_environment.staging.id
+ # kafka_api_version     = confluent_kafka_cluster.dedicated2.api_version
+ # kafka_kind            = confluent_kafka_cluster.dedicated2.kind
+ # confluent_service_account_id          = confluent_service_account.app-manager2.id
+ # confluent_service_account_api_version = confluent_service_account.app-manager2.api_version
+ # confluent_service_account_kind        = confluent_service_account.app-manager2.kind
+ # topics                = jsondecode(file("topics2.json"))
 
-  depends_on = [
-    confluent_kafka_cluster.dedicated2
-  ]
+  #depends_on = [
+  #  confluent_kafka_cluster.dedicated2
+  #]
   
-}
+#}
 
 resource "confluent_network" "peering" {
   display_name     = "Peering Network"
@@ -189,21 +189,21 @@ resource "confluent_kafka_cluster" "dedicated" {
   }
 }
 
-resource "confluent_kafka_cluster" "dedicated2" {
-  display_name = "inventory2"
-  availability = "SINGLE_ZONE"
-  cloud        = confluent_network.peering.cloud
-  region       = confluent_network.peering.region
-  dedicated {
-    cku = 1
-  }
-  environment {
-    id = confluent_environment.staging.id
-  }
-  network {
-    id = confluent_network.peering.id
-  }
-}
+#resource "confluent_kafka_cluster" "dedicated2" {
+#  display_name = "inventory2"
+#  availability = "SINGLE_ZONE"
+#  cloud        = confluent_network.peering.cloud
+#  region       = confluent_network.peering.region
+#  dedicated {
+#    cku = 1
+#  }
+#  environment {
+#    id = confluent_environment.staging.id
+#  }
+#  network {
+#    id = confluent_network.peering.id
+#  }
+#}
 
 
 
