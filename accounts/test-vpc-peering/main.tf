@@ -32,7 +32,7 @@ resource "confluent_role_binding" "app-manager-kafka-cluster-admin" {
   role_name   = "CloudClusterAdmin"
   crn_pattern = confluent_kafka_cluster.dedicated.rbac_crn
 depends_on = [
-    confluent_kafka_cluster.dedicated
+    confluent_kafka_cluster.dedicated,
     confluent_service_account.app-manager
   ]
 }
@@ -63,8 +63,8 @@ resource "confluent_api_key" "app-manager-kafka-api-key" {
     }
   }
   depends_on = [
-    confluent_kafka_cluster.dedicated
-    confluent_environment.staging
+    confluent_kafka_cluster.dedicated,
+    confluent_environment.staging,
     confluent_service_account.app-manager  
   ]
 }
@@ -123,9 +123,9 @@ module "confluent_kafka_topics" {
   topics                = jsondecode(file("topics.json"))
 
   depends_on = [
-    confluent_kafka_cluster.dedicated
-    confluent_environment.staging
-    confluent_service_account.app-manager
+    confluent_kafka_cluster.dedicated,
+    confluent_environment.staging,
+    confluent_service_account.app-manager,
     confluent_api_key.app-manager-kafka-api-key  
   ]
   
@@ -200,7 +200,7 @@ resource "confluent_kafka_cluster" "dedicated" {
     id = confluent_network.peering.id
   }
   depends_on = [
-    confluent_environment.staging
+    confluent_environment.staging,
     confluent_network.peering  
   ]
 }
