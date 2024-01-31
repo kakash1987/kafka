@@ -126,7 +126,9 @@ module "confluent_kafka_topics" {
     confluent_kafka_cluster.dedicated,
     confluent_environment.staging,
     confluent_service_account.app-manager,
-    confluent_api_key.app-manager-kafka-api-key  
+    confluent_api_key.app-manager-kafka-api-key,
+    confluent_network.peering,
+    confluent_peering.aws
   ]
   
 }
