@@ -87,10 +87,10 @@ resource "confluent_api_key" "app-manager-kafka-api-key" {
   # 'depends_on' meta-argument is specified in confluent_api_key.app-manager-kafka-api-key to avoid having
   # multiple copies of this definition in the configuration which would happen if we specify it in
   # confluent_kafka_topic, confluent_kafka_acl resources instead.
-  depends_on = [
-    confluent_role_binding.app-manager-kafka-cluster-admin2
-  ]
-}
+  #depends_on = [
+  #  confluent_role_binding.app-manager-kafka-cluster-admin2
+  #]
+#}
 
 module "confluent_kafka_topics" {
   source = "../../modules/confluent_kafka_topics_module"
