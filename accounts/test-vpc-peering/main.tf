@@ -304,7 +304,7 @@ data "aws_vpc_peering_connection" "accepter" {
   peer_vpc_id = confluent_peering.aws.aws[0].vpc
 }
 
-data "aws_vpc_peering_connection2" "accepter" {
+data "aws_vpc_peering_connection" "accepter2" {
   vpc_id      = confluent_network.peering2.aws[0].vpc
   peer_vpc_id = confluent_peering.aws.aws[0].vpc
 }
@@ -315,8 +315,8 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
   auto_accept               = true
 }
 
-resource "aws_vpc_peering_connection_accepter" "peer" {
-  vpc_peering_connection_id = data.aws_vpc_peering_connection2.accepter.id
+resource "aws_vpc_peering_connection_accepter" "peer2" {
+  vpc_peering_connection_id = data.aws_vpc_peering_connection.accepter2.id
   auto_accept               = true
 }
 
