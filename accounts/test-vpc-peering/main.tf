@@ -304,7 +304,7 @@ data "aws_vpc_peering_connection" "accepter" {
   peer_vpc_id = confluent_peering.aws.aws[0].vpc
 }
 
-data "aws_vpc_peering_connection" "accepter" {
+data "aws_vpc_peering_connection2" "accepter" {
   vpc_id      = confluent_network.peering2.aws[0].vpc
   peer_vpc_id = confluent_peering.aws.aws[0].vpc
 }
