@@ -2,6 +2,10 @@ resource "confluent_environment" "staging" {
   display_name = "Staging"
 }
 
+resource "confluent_environment" "test" {
+  display_name = "Test"
+}
+
 
 #output "confluent_environment_id" {
 #  value = confluent_environment.staging.id
@@ -89,12 +93,12 @@ resource "confluent_api_key" "app-manager-kafka-api-key2" {
     kind        = confluent_kafka_cluster.dedicated2.kind
 
     environment {
-      id = confluent_environment.staging.id
+      id = confluent_environment.test.id
     }
   }
 depends_on = [
     confluent_kafka_cluster.dedicated2,
-    confluent_environment.staging,
+    confluent_environment.test,
     confluent_service_account.app-manager2  
   ]
 }
@@ -159,7 +163,7 @@ module "confluent_kafka_topics2" {
   kafka_api_secret      = confluent_api_key.app-manager-kafka-api-key2.secret
   cloud_api_key         = var.confluent_cloud_api_key
   cloud_api_secret      = var.confluent_cloud_api_secret
-  environment_id        = confluent_environment.staging.id
+  environment_id        = confluent_environment.test.id
   kafka_api_version     = confluent_kafka_cluster.dedicated2.api_version
   kafka_kind            = confluent_kafka_cluster.dedicated2.kind
   confluent_service_account_id          = confluent_service_account.app-manager2.id
@@ -169,7 +173,7 @@ module "confluent_kafka_topics2" {
 
   depends_on = [
     confluent_kafka_cluster.dedicated2,
-    confluent_environment.staging,
+    confluent_environment.test,
     confluent_service_account.app-manager2,
     confluent_api_key.app-manager-kafka-api-key2,
     confluent_network.peering,
@@ -195,6 +199,20 @@ depends_on = [
   ]
 }
 
+resource "confluent_network" "peering2" {
+  display_name     = "Peering Network"
+  cloud            = "AWS"
+  region           = var.region
+  cidr             = var.cidr2
+  connection_types = ["PEERING"]
+  environment {
+    id = confluent_environment.test.id
+  }
+depends_on = [
+    confluent_environment.test  
+  ]
+}
+
 resource "confluent_peering" "aws" {
   display_name = "AWS Peering"
   aws {
@@ -212,6 +230,26 @@ resource "confluent_peering" "aws" {
 depends_on = [
     confluent_environment.staging,
     confluent_network.peering
+  ]
+}
+
+resource "confluent_peering" "aws2" {
+  display_name = "AWS Peering 2"
+  aws {
+    account         = var.aws_account_id
+    vpc             = var.vpc_id
+    routes          = var.routes
+    customer_region = var.customer_region
+  }
+  environment {
+    id = confluent_environment.test.id
+  }
+  network {
+    id = confluent_network.peering2.id
+  }
+depends_on = [
+    confluent_environment.test,
+    confluent_network.peering2
   ]
 }
 
@@ -266,9 +304,19 @@ data "aws_vpc_peering_connection" "accepter" {
   peer_vpc_id = confluent_peering.aws.aws[0].vpc
 }
 
+data "aws_vpc_peering_connection" "accepter" {
+  vpc_id      = confluent_network.peering2.aws[0].vpc
+  peer_vpc_id = confluent_peering.aws.aws[0].vpc
+}
+
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_accepter
 resource "aws_vpc_peering_connection_accepter" "peer" {
   vpc_peering_connection_id = data.aws_vpc_peering_connection.accepter.id
+  auto_accept               = true
+}
+
+resource "aws_vpc_peering_connection_accepter" "peer" {
+  vpc_peering_connection_id = data.aws_vpc_peering_connection2.accepter.id
   auto_accept               = true
 }
 
@@ -282,4 +330,11 @@ resource "aws_route" "r" {
   route_table_id            = each.key
   destination_cidr_block    = confluent_network.peering.cidr
   vpc_peering_connection_id = data.aws_vpc_peering_connection.accepter.id
+}
+
+resource "aws_route" "r" {
+  for_each                  = toset(data.aws_route_tables.rts.ids)
+  route_table_id            = each.key
+  destination_cidr_block    = confluent_network.peering2.cidr
+  vpc_peering_connection_id = data.aws_vpc_peering_connection2.accepter.id
 }
