@@ -282,10 +282,10 @@ resource "confluent_kafka_cluster" "dedicated2" {
     cku = 1
   }
   environment {
-    id = confluent_environment.staging.id
+    id = confluent_environment.test.id
   }
   network {
-    id = confluent_network.peering.id
+    id = confluent_network.peering2.id
   }
 }
 
@@ -306,7 +306,7 @@ data "aws_vpc_peering_connection" "accepter" {
 
 data "aws_vpc_peering_connection" "accepter2" {
   vpc_id      = confluent_network.peering2.aws[0].vpc
-  peer_vpc_id = confluent_peering.aws.aws[0].vpc
+  peer_vpc_id = confluent_peering.aws2.aws[0].vpc
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_accepter
@@ -336,5 +336,5 @@ resource "aws_route" "r2" {
   for_each                  = toset(data.aws_route_tables.rts.ids)
   route_table_id            = each.key
   destination_cidr_block    = confluent_network.peering2.cidr
-  vpc_peering_connection_id = data.aws_vpc_peering_connection.accepter2.id
+  vpc_peering_connection_id = data.aws_vpc_peering_connection.accepter.peer2.id
 }
