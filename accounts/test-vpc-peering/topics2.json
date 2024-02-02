@@ -5,8 +5,8 @@
       "retention.ms": null
     },
     "partitions_count": 1,
-    "consumer": "Optima.ChangeSetReceiver1",
-    "producer": "Optima.Debezium1"
+    "consumer": "Optima.ChangeSetReceiver12",
+    "producer": "Optima.Debezium12"
   },
   "INTOP03.Optima.ChangeSetSegments2": {
     "config": {
@@ -14,8 +14,8 @@
       "retention.ms": null
     },
     "partitions_count": 1,
-    "consumer": "Optima.ChangeSegmentsReceiver1",
-    "producer": "Optima.Debezium2"
+    "consumer": "Optima.ChangeSegmentsReceiver12",
+    "producer": "Optima.Debezium22"
   },
   "INTOP03.InteroperabilityPlatform.PartnerUpdates2": {
     "config": {
@@ -23,8 +23,8 @@
       "retention.ms": null
     },
     "partitions_count": 1,
-    "consumer": "InteroperabilityPlatform.WorkerService1",
-    "producer": "DataPump.Processor1"
+    "consumer": "InteroperabilityPlatform.WorkerService12",
+    "producer": "DataPump.Processor12"
   },
   "INTOP04.Optima.ChangeSets2": {
     "config": {
@@ -32,8 +32,8 @@
       "retention.ms": null
     },
     "partitions_count": 1,
-    "consumer": "Optima.ChangeSetReceiver2",
-    "producer": "Optima.Debezium3"
+    "consumer": "Optima.ChangeSetReceiver22",
+    "producer": "Optima.Debezium32"
   },
   "INTOP04.Optima.ChangeSetSegments2": {
     "config": {
@@ -41,8 +41,8 @@
       "retention.ms": null
     },
     "partitions_count": 1,
-    "consumer": "Optima.ChangeSegmentsReceiver2",
-    "producer": "Optima.Debezium4"
+    "consumer": "Optima.ChangeSegmentsReceiver22",
+    "producer": "Optima.Debezium42"
   },
   "INTOP04.InteroperabilityPlatform.PartnerUpdates2": {
     "config": {
@@ -50,7 +50,7 @@
       "retention.ms": null
     },
     "partitions_count": 1,
-    "consumer": "InteroperabilityPlatform.WorkerService2",
-    "producer": "DataPump.Processor2"
+    "consumer": "InteroperabilityPlatform.WorkerService22",
+    "producer": "DataPump.Processor22"
   }
 }
