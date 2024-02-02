@@ -56,6 +56,12 @@ variable "cidr" {
   default     = "10.1.0.0/16"
 }
 
+variable "cidr2" {
+  description = "The CIDR of Confluent Cloud Network."
+  type        = string
+  default     = "10.2.0.0/16"
+}
+
 variable "aws_account_id" {
   description = "The AWS Account ID of the peer VPC owner (12 digits)."
   type        = string
