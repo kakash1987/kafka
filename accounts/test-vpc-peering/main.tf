@@ -168,7 +168,7 @@ module "confluent_kafka_topics2" {
   topics                = jsondecode(file("topics2.json"))
 
   depends_on = [
-    confluent_kafka_cluster.dedicated2
+    confluent_kafka_cluster.dedicated2,
     confluent_environment.staging,
     confluent_service_account.app-manager2,
     confluent_api_key.app-manager-kafka-api-key2,
