@@ -176,11 +176,11 @@ module "confluent_kafka_topics2" {
     confluent_environment.test,
     confluent_service_account.app-manager2,
     confluent_api_key.app-manager-kafka-api-key2,
-    confluent_network.peering2,
-    confluent_peering.aws2,
+    confluent_network.peering3,
+    confluent_peering.aws3,
     confluent_role_binding.app-manager-kafka-cluster-admin2,
-    aws_vpc_peering_connection_accepter.peer2,
-    aws_route.r2  
+    aws_vpc_peering_connection_accepter.peer3,
+    aws_route.r3  
   ]
   
 }
@@ -199,7 +199,7 @@ depends_on = [
   ]
 }
 
-resource "confluent_network" "peering2" {
+resource "confluent_network" "peering3" {
   display_name     = "Peering Network"
   cloud            = "AWS"
   region           = var.region
@@ -233,8 +233,8 @@ depends_on = [
   ]
 }
 
-resource "confluent_peering" "aws2" {
-  display_name = "AWS Peering 2"
+resource "confluent_peering" "aws3" {
+  display_name = "AWS Peering 3"
   aws {
     account         = var.aws_account_id
     vpc             = var.vpc_id
@@ -245,11 +245,11 @@ resource "confluent_peering" "aws2" {
     id = confluent_environment.test.id
   }
   network {
-    id = confluent_network.peering2.id
+    id = confluent_network.peering3.id
   }
 depends_on = [
     confluent_environment.test,
-    confluent_network.peering2
+    confluent_network.peering3
   ]
 }
 
@@ -285,7 +285,7 @@ resource "confluent_kafka_cluster" "dedicated2" {
     id = confluent_environment.test.id
   }
   network {
-    id = confluent_network.peering2.id
+    id = confluent_network.peering3.id
   }
 }
 
@@ -304,9 +304,9 @@ data "aws_vpc_peering_connection" "accepter" {
   peer_vpc_id = confluent_peering.aws.aws[0].vpc
 }
 
-data "aws_vpc_peering_connection" "accepter2" {
-  vpc_id      = confluent_network.peering2.aws[0].vpc
-  peer_vpc_id = confluent_peering.aws2.aws[0].vpc
+data "aws_vpc_peering_connection" "accepter3" {
+  vpc_id      = confluent_network.peering3.aws[0].vpc
+  peer_vpc_id = confluent_peering.aws3.aws[0].vpc
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/vpc_peering_connection_accepter
@@ -315,8 +315,8 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
   auto_accept               = true
 }
 
-resource "aws_vpc_peering_connection_accepter" "peer2" {
-  vpc_peering_connection_id = data.aws_vpc_peering_connection.accepter2.id
+resource "aws_vpc_peering_connection_accepter" "peer3" {
+  vpc_peering_connection_id = data.aws_vpc_peering_connection.accepter3.id
   auto_accept               = true
 }
 
@@ -332,9 +332,9 @@ resource "aws_route" "r" {
   vpc_peering_connection_id = data.aws_vpc_peering_connection.accepter.id
 }
 
-resource "aws_route" "r2" {
+resource "aws_route" "r3" {
   for_each                  = toset(data.aws_route_tables.rts.ids)
   route_table_id            = each.key
-  destination_cidr_block    = confluent_network.peering2.cidr
-  vpc_peering_connection_id = data.aws_vpc_peering_connection.accepter2.id
+  destination_cidr_block    = confluent_network.peering3.cidr
+  vpc_peering_connection_id = data.aws_vpc_peering_connection.accepter3.id
 }
