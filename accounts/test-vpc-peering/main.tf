@@ -176,11 +176,11 @@ module "confluent_kafka_topics2" {
     confluent_environment.test,
     confluent_service_account.app-manager2,
     confluent_api_key.app-manager-kafka-api-key2,
-    confluent_network.peering,
-    confluent_peering.aws,
+    confluent_network.peering2,
+    confluent_peering.aws2,
     confluent_role_binding.app-manager-kafka-cluster-admin2,
-    aws_vpc_peering_connection_accepter.peer,
-    aws_route.r  
+    aws_vpc_peering_connection_accepter.peer2,
+    aws_route.r2  
   ]
   
 }
